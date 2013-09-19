@@ -24,9 +24,9 @@
  * stored in the same directory as the main log4javascript.js file.
  *
  * Author: Tim Down <tim@log4javascript.org>
- * Version: 1.4.5
+ * Version: 1.4.6
  * Edition: log4javascript_production
- * Build date: 20 February 2013
+ * Build date: 19 March 2013
  * Website: http://log4javascript.org
  */
 
@@ -151,7 +151,7 @@ var log4javascript = (function() {
 	Log4JavaScript.prototype = new EventSupport();
 
 	log4javascript = new Log4JavaScript();
-	log4javascript.version = "1.4.5";
+	log4javascript.version = "1.4.6";
 	log4javascript.edition = "log4javascript_production";
 
 	/* -------------------------------------------------------------------------- */
@@ -682,7 +682,7 @@ var log4javascript = (function() {
 			}
 		};
 
-		this.groupEnd = function(name) {
+		this.groupEnd = function() {
 			if (enabled) {
 				var effectiveAppenders = this.getEffectiveAppenders();
 				for (var i = 0, len = effectiveAppenders.length; i < len; i++) {
@@ -1901,8 +1901,9 @@ var log4javascript = (function() {
 	};
 
 	function isHttpRequestSuccessful(xmlHttp) {
-		return (isUndefined(xmlHttp.status) || xmlHttp.status === 0 ||
-			(xmlHttp.status >= 200 && xmlHttp.status < 300));
+		return isUndefined(xmlHttp.status) || xmlHttp.status === 0 ||
+			(xmlHttp.status >= 200 && xmlHttp.status < 300) ||
+			xmlHttp.status == 1223 /* Fix for IE */;
 	}
 
 	/* ---------------------------------------------------------------------- */
