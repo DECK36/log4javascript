@@ -85,7 +85,7 @@ var log4javascript_stub = (function() {
 
 	log4javascript = {
 		isStub: true,
-		version: "1.4.5",
+		version: "1.4.6",
 		edition: "log4javascript",
         setDocumentReady: f,
 		setEventTypes: f,

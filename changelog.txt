@@ -1,6 +1,9 @@
 log4javascript change log
 -------------------------
 
+1.4.6 (19/3/2013)
+- Added fix to handle 1223 status code from XMLHttpRequest in IE
+
 1.4.5 (20/2/2013)
 - Changed AjaxAppender to send raw data rather than URL-encoded form data when
   content-type is not "application/x-www-form-urlencoded"
