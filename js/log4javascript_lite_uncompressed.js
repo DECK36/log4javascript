@@ -33,7 +33,7 @@ var log4javascript;
 	var newLine = "\r\n";
 	function Log4JavaScript() {}
 	log4javascript = new Log4JavaScript();
-	log4javascript.version = "1.4.5";
+	log4javascript.version = "1.4.6";
 	log4javascript.edition = "log4javascript_lite";
 
 	function getExceptionMessage(ex) {
