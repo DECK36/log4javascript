@@ -28,6 +28,7 @@
                 <h2>Contents</h2>
                 <ul>
                     <li><a href="#intro">Introduction</a></li>
+                    <li><a href="#amd">AMD</a></li>
                     <li><a href="#noteaboutlog4javascript">Note about the log4javascript object</a></li>
                     <li>
                         <a href="#loggersappenderslayoutslevels">Loggers, appenders, layouts and levels</a>
@@ -88,12 +89,28 @@
                         <a href="#container">Top</a>
                     </p>
                 </div>
+                <div id="amd">
+                    <h2>AMD</h2>
+                    <p>
+                        Since version 1.4.10, log4javascript comes with AMD support hence can be loaded by a script
+                        loader such as <a href="http://requirejs.org/" title="RequireJS website (opens in new window)"
+                                          target="_blank">RequireJS</a>.
+                    </p>
+                    <p>
+                        The current version of JavaScript is designed only to run in a browser. If not using AMD,
+                        log4javascript creates a single property of the global object (to all intents and purposes, a
+                        global variable) called <code>log4javascript</code>. 
+                    </p>
+                    <p class="linktotop">
+                        <a href="#container">Top</a>
+                    </p>
+                </div>
                 <div id="noteaboutlog4javascript">
                     <h2>Note about the log4javascript object</h2>
                     <p>
                         All of log4javascript's instantiable classes are accessible via the log4javascript object, which
-                        acts as a namespace. Therefore references to all class names must be preceded with "log4javascript.".
-                        For example:
+                        acts as a namespace. Therefore references to all class names must be preceded with
+                        "log4javascript.". For example:
                     </p>
                     <p>
                         <code>var popUpAppender = new log4javascript.PopUpAppender();</code>
@@ -287,11 +304,17 @@
                             <div class="name">getDefaultLogger</div>
                             <div class="methodsignature"><code>Logger <strong>getDefaultLogger</strong>()</code></div>
                             <div class="summary">
-                                Convenience method that returns the default logger. The default logger
-                                has a single appender: a <code><a href="#popupappender">PopUpAppender</a></code>
-                                with the default layout, width and height, and with <code>focusPopUp</code> set to false
-                                and <code>lazyInit</code>, <code>useOldPopUp</code> and
-                                <code>complainAboutPopUpBlocking</code> all set to true.
+                                <p>
+                                    Convenience method that returns the default logger. In the standard edition, the
+                                    default logger has a single appender: a
+                                    <code><a href="#popupappender">PopUpAppender</a></code> with the default layout,
+                                    width and height, and with <code>focusPopUp</code> set to false and
+                                    <code>lazyInit</code>, <code>useOldPopUp</code> and
+                                    <code>complainAboutPopUpBlocking</code> all set to true. 
+                                </p>
+                                <p>
+                                    In the production edition, the default logger has no appenders.
+                                </p>
                             </div>
                         </li>
                         <li class="method">
@@ -601,7 +624,7 @@
                         </li>
                         <li class="method">
                             <div class="name">getAdditivity</div>
-                            <div class="methodsignature"><code>Level <strong>getLevel</strong>()</code></div>
+                            <div class="methodsignature"><code>Boolean <strong>getAdditivity</strong>()</code></div>
                             <div class="summary">
                                 Returns whether additivity is enabled for this logger.
                             </div>

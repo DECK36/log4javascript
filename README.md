@@ -1,6 +1,7 @@
-log4javascript
-==============
+# log4javascript
 
 http://log4javascript.org
 
-It contains the log4javascript lib prepared to be used with npm
+npm/bower enabled copy of log4javascript
+
+current version: 1.4.13

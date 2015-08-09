@@ -1,5 +1,5 @@
 /**
- * Copyright 2014 Tim Down.
+ * Copyright 2015 Tim Down.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,60 +24,67 @@
  * stored in the same directory as the main log4javascript.js file.
  *
  * Author: Tim Down <tim@log4javascript.org>
- * Version: 1.4.9
+ * Version: 1.4.13
  * Edition: log4javascript
- * Build date: 12 May 2014
+ * Build date: 23 May 2015
  * Website: http://log4javascript.org
  */
 
-/* -------------------------------------------------------------------------- */
-// Array-related stuff
-
-// Next three methods are solely for IE5, which is missing them
-if (!Array.prototype.push) {
-	Array.prototype.push = function() {
-		for (var i = 0, len = arguments.length; i < len; i++){
-			this[this.length] = arguments[i];
-		}
-		return this.length;
-	};
-}
-
-if (!Array.prototype.shift) {
-	Array.prototype.shift = function() {
-		if (this.length > 0) {
-			var firstItem = this[0];
-			for (var i = 0, len = this.length - 1; i < len; i++) {
-				this[i] = this[i + 1];
+(function(factory, root) {
+	if (typeof define == "function" && define.amd) {
+		// AMD. Register as an anonymous module.
+		define(factory);
+	} else if (typeof module != "undefined" && typeof exports == "object") {
+		// Node/CommonJS style
+		module.exports = factory();
+	} else {
+		// No AMD or CommonJS support so we place log4javascript in (probably) the global variable
+		root.log4javascript = factory();
+	}
+})(function() {
+	// Array-related stuff. Next three methods are solely for IE5, which is missing them
+	if (!Array.prototype.push) {
+		Array.prototype.push = function() {
+			for (var i = 0, len = arguments.length; i < len; i++){
+				this[this.length] = arguments[i];
 			}
-			this.length = this.length - 1;
-			return firstItem;
-		}
-	};
-}
+			return this.length;
+		};
+	}
 
-if (!Array.prototype.splice) {
-	Array.prototype.splice = function(startIndex, deleteCount) {
-		var itemsAfterDeleted = this.slice(startIndex + deleteCount);
-		var itemsDeleted = this.slice(startIndex, startIndex + deleteCount);
-		this.length = startIndex;
-		// Copy the arguments into a proper Array object
-		var argumentsArray = [];
-		for (var i = 0, len = arguments.length; i < len; i++) {
-			argumentsArray[i] = arguments[i];
-		}
-		var itemsToAppend = (argumentsArray.length > 2) ?
-			itemsAfterDeleted = argumentsArray.slice(2).concat(itemsAfterDeleted) : itemsAfterDeleted;
-		for (i = 0, len = itemsToAppend.length; i < len; i++) {
-			this.push(itemsToAppend[i]);
-		}
-		return itemsDeleted;
-	};
-}
+	if (!Array.prototype.shift) {
+		Array.prototype.shift = function() {
+			if (this.length > 0) {
+				var firstItem = this[0];
+				for (var i = 0, len = this.length - 1; i < len; i++) {
+					this[i] = this[i + 1];
+				}
+				this.length = this.length - 1;
+				return firstItem;
+			}
+		};
+	}
 
-/* -------------------------------------------------------------------------- */
+	if (!Array.prototype.splice) {
+		Array.prototype.splice = function(startIndex, deleteCount) {
+			var itemsAfterDeleted = this.slice(startIndex + deleteCount);
+			var itemsDeleted = this.slice(startIndex, startIndex + deleteCount);
+			this.length = startIndex;
+			// Copy the arguments into a proper Array object
+			var argumentsArray = [];
+			for (var i = 0, len = arguments.length; i < len; i++) {
+				argumentsArray[i] = arguments[i];
+			}
+			var itemsToAppend = (argumentsArray.length > 2) ?
+				itemsAfterDeleted = argumentsArray.slice(2).concat(itemsAfterDeleted) : itemsAfterDeleted;
+			for (i = 0, len = itemsToAppend.length; i < len; i++) {
+				this.push(itemsToAppend[i]);
+			}
+			return itemsDeleted;
+		};
+	}
 
-var log4javascript = (function() {
+	/* ---------------------------------------------------------------------- */
 
 	function isUndefined(obj) {
 		return typeof obj == "undefined";
@@ -150,8 +157,8 @@ var log4javascript = (function() {
 	function Log4JavaScript() {}
 	Log4JavaScript.prototype = new EventSupport();
 
-	log4javascript = new Log4JavaScript();
-	log4javascript.version = "1.4.9";
+	var log4javascript = new Log4JavaScript();
+	log4javascript.version = "1.4.13";
 	log4javascript.edition = "log4javascript";
 
 	/* -------------------------------------------------------------------------- */
@@ -220,17 +227,9 @@ var log4javascript = (function() {
 	var urlEncode = (typeof window.encodeURIComponent != "undefined") ?
 		function(str) {
 			return encodeURIComponent(str);
-		}: 
+		}:
 		function(str) {
 			return escape(str).replace(/\+/g, "%2B").replace(/"/g, "%22").replace(/'/g, "%27").replace(/\//g, "%2F").replace(/=/g, "%3D");
-		};
-
-	var urlDecode = (typeof window.decodeURIComponent != "undefined") ?
-		function(str) {
-			return decodeURIComponent(str);
-		}: 
-		function(str) {
-			return unescape(str).replace(/%2B/g, "+").replace(/%22/g, "\"").replace(/%27/g, "'").replace(/%2F/g, "/").replace(/%3D/g, "=");
 		};
 
 	function array_remove(arr, val) {
@@ -329,66 +328,6 @@ var log4javascript = (function() {
 		};
 	}
 
-	function getListenersPropertyName(eventName) {
-		return "__log4javascript_listeners__" + eventName;
-	}
-
-	function addEvent(node, eventName, listener, useCapture, win) {
-		win = win ? win : window;
-		if (node.addEventListener) {
-			node.addEventListener(eventName, listener, useCapture);
-		} else if (node.attachEvent) {
-			node.attachEvent("on" + eventName, listener);
-		} else {
-			var propertyName = getListenersPropertyName(eventName);
-			if (!node[propertyName]) {
-				node[propertyName] = [];
-				// Set event handler
-				node["on" + eventName] = function(evt) {
-					evt = getEvent(evt, win);
-					var listenersPropertyName = getListenersPropertyName(eventName);
-
-					// Clone the array of listeners to leave the original untouched
-					var listeners = this[listenersPropertyName].concat([]);
-					var currentListener;
-
-					// Call each listener in turn
-					while ((currentListener = listeners.shift())) {
-						currentListener.call(this, evt);
-					}
-				};
-			}
-			node[propertyName].push(listener);
-		}
-	}
-
-	function removeEvent(node, eventName, listener, useCapture) {
-		if (node.removeEventListener) {
-			node.removeEventListener(eventName, listener, useCapture);
-		} else if (node.detachEvent) {
-			node.detachEvent("on" + eventName, listener);
-		} else {
-			var propertyName = getListenersPropertyName(eventName);
-			if (node[propertyName]) {
-				array_remove(node[propertyName], listener);
-			}
-		}
-	}
-
-	function getEvent(evt, win) {
-		win = win ? win : window;
-		return evt ? evt : win.event;
-	}
-
-	function stopEventPropagation(evt) {
-		if (evt.stopPropagation) {
-			evt.stopPropagation();
-		} else if (typeof evt.cancelBubble != "undefined") {
-			evt.cancelBubble = true;
-		}
-		evt.returnValue = false;
-	}
-
 	/* ---------------------------------------------------------------------- */
 	// Simple logging for log4javascript itself
 
@@ -465,7 +404,6 @@ var log4javascript = (function() {
 	log4javascript.isTimeStampsInMilliseconds = function() {
 		return useTimeStampsInMilliseconds;
 	};
-	
 
 	// This evaluates the given expression in the current scope, thus allowing
 	// scripts to access private variables. Particularly useful for testing
@@ -543,7 +481,7 @@ var log4javascript = (function() {
 
 		var appenderCache = null;
 		var appenderCacheInvalidated = false;
-		
+
 		this.addChild = function(childLogger) {
 			this.children.push(childLogger);
 			childLogger.parent = this;
@@ -609,7 +547,7 @@ var log4javascript = (function() {
 			}
 			return appenderCache;
 		};
-		
+
 		this.invalidateAppenderCache = function() {
 			appenderCacheInvalidated = true;
 			for (var i = 0, len = this.children.length; i < len; i++) {
@@ -817,7 +755,7 @@ var log4javascript = (function() {
 
 	log4javascript.getLogger = function(loggerName) {
 		// Use default logger if loggerName is not specified or invalid
-		if (!(typeof loggerName == "string")) {
+		if (typeof loggerName != "string") {
 			loggerName = anonymousLoggerName;
 			logLog.warn("log4javascript.getLogger: non-string logger name "	+
 				toStr(loggerName) + " supplied, returning anonymous logger");
@@ -851,9 +789,7 @@ var log4javascript = (function() {
 	var defaultLogger = null;
 	log4javascript.getDefaultLogger = function() {
 		if (!defaultLogger) {
-			defaultLogger = log4javascript.getLogger(defaultLoggerName);
-			var a = new log4javascript.PopUpAppender();
-			defaultLogger.addAppender(a);
+			defaultLogger = createDefaultLogger();
 		}
 		return defaultLogger;
 	};
@@ -1102,7 +1038,7 @@ var log4javascript = (function() {
 	log4javascript.Appender = Appender;
 
 	/* ---------------------------------------------------------------------- */
-	// SimpleLayout 
+	// SimpleLayout
 
 	function SimpleLayout() {
 		this.customFields = [];
@@ -1115,16 +1051,16 @@ var log4javascript = (function() {
 	};
 
 	SimpleLayout.prototype.ignoresThrowable = function() {
-	    return true;
+		return true;
 	};
 
 	SimpleLayout.prototype.toString = function() {
-	    return "SimpleLayout";
+		return "SimpleLayout";
 	};
 
 	log4javascript.SimpleLayout = SimpleLayout;
 	/* ----------------------------------------------------------------------- */
-	// NullLayout 
+	// NullLayout
 
 	function NullLayout() {
 		this.customFields = [];
@@ -1137,7 +1073,7 @@ var log4javascript = (function() {
 	};
 
 	NullLayout.prototype.ignoresThrowable = function() {
-	    return true;
+		return true;
 	};
 
 	NullLayout.prototype.formatWithException = function(loggingEvent) {
@@ -1146,7 +1082,7 @@ var log4javascript = (function() {
 	};
 
 	NullLayout.prototype.toString = function() {
-	    return "NullLayout";
+		return "NullLayout";
 	};
 
 	log4javascript.NullLayout = NullLayout;
@@ -1214,11 +1150,11 @@ var log4javascript = (function() {
 	};
 
 	XmlLayout.prototype.ignoresThrowable = function() {
-	    return false;
+		return false;
 	};
 
 	XmlLayout.prototype.toString = function() {
-	    return "XmlLayout";
+		return "XmlLayout";
 	};
 
 	log4javascript.XmlLayout = XmlLayout;
@@ -1255,56 +1191,56 @@ var log4javascript = (function() {
 		return this.combineMessages;
 	};
 
-    JsonLayout.prototype.format = function(loggingEvent) {
-        var layout = this;
-        var dataValues = this.getDataValues(loggingEvent, this.combineMessages);
-        var str = "{" + this.lineBreak;
-        var i, len;
+	JsonLayout.prototype.format = function(loggingEvent) {
+		var layout = this;
+		var dataValues = this.getDataValues(loggingEvent, this.combineMessages);
+		var str = "{" + this.lineBreak;
+		var i, len;
 
-        function formatValue(val, prefix, expand) {
-            // Check the type of the data value to decide whether quotation marks
-            // or expansion are required
-            var formattedValue;
-            var valType = typeof val;
-            if (val instanceof Date) {
-                formattedValue = String(val.getTime());
-            } else if (expand && (val instanceof Array)) {
-                formattedValue = "[" + layout.lineBreak;
-                for (var i = 0, len = val.length; i < len; i++) {
-                    var childPrefix = prefix + layout.tab;
-                    formattedValue += childPrefix + formatValue(val[i], childPrefix, false);
-                    if (i < val.length - 1) {
-                        formattedValue += ",";
-                    }
-                    formattedValue += layout.lineBreak;
-                }
-                formattedValue += prefix + "]";
-            } else if (valType !== "number" && valType !== "boolean") {
-                formattedValue = "\"" + escapeNewLines(toStr(val).replace(/\"/g, "\\\"")) + "\"";
-            } else {
-                formattedValue = val;
-            }
-            return formattedValue;
-        }
+		function formatValue(val, prefix, expand) {
+			// Check the type of the data value to decide whether quotation marks
+			// or expansion are required
+			var formattedValue;
+			var valType = typeof val;
+			if (val instanceof Date) {
+				formattedValue = String(val.getTime());
+			} else if (expand && (val instanceof Array)) {
+				formattedValue = "[" + layout.lineBreak;
+				for (var i = 0, len = val.length; i < len; i++) {
+					var childPrefix = prefix + layout.tab;
+					formattedValue += childPrefix + formatValue(val[i], childPrefix, false);
+					if (i < val.length - 1) {
+						formattedValue += ",";
+					}
+					formattedValue += layout.lineBreak;
+				}
+				formattedValue += prefix + "]";
+			} else if (valType !== "number" && valType !== "boolean") {
+				formattedValue = "\"" + escapeNewLines(toStr(val).replace(/\"/g, "\\\"")) + "\"";
+			} else {
+				formattedValue = val;
+			}
+			return formattedValue;
+		}
 
-        for (i = 0, len = dataValues.length - 1; i <= len; i++) {
-            str += this.tab + "\"" + dataValues[i][0] + "\"" + this.colon + formatValue(dataValues[i][1], this.tab, true);
-            if (i < len) {
-                str += ",";
-            }
-            str += this.lineBreak;
-        }
+		for (i = 0, len = dataValues.length - 1; i <= len; i++) {
+			str += this.tab + "\"" + dataValues[i][0] + "\"" + this.colon + formatValue(dataValues[i][1], this.tab, true);
+			if (i < len) {
+				str += ",";
+			}
+			str += this.lineBreak;
+		}
 
-        str += "}" + this.lineBreak;
-        return str;
-    };
+		str += "}" + this.lineBreak;
+		return str;
+	};
 
 	JsonLayout.prototype.ignoresThrowable = function() {
-	    return false;
+		return false;
 	};
 
 	JsonLayout.prototype.toString = function() {
-	    return "JsonLayout";
+		return "JsonLayout";
 	};
 
 	JsonLayout.prototype.getContentType = function() {
@@ -1340,11 +1276,11 @@ var log4javascript = (function() {
 	};
 
 	HttpPostDataLayout.prototype.ignoresThrowable = function(loggingEvent) {
-	    return false;
+		return false;
 	};
 
 	HttpPostDataLayout.prototype.toString = function() {
-	    return "HttpPostDataLayout";
+		return "HttpPostDataLayout";
 	};
 
 	log4javascript.HttpPostDataLayout = HttpPostDataLayout;
@@ -1355,7 +1291,7 @@ var log4javascript = (function() {
 		var objectsExpanded = [];
 
 		function doFormat(obj, depth, indentation) {
-			var i, j, len, childDepth, childIndentation, childLines, expansion,
+			var i, len, childDepth, childIndentation, childLines, expansion,
 				childExpansion;
 
 			if (!indentation) {
@@ -1400,8 +1336,8 @@ var log4javascript = (function() {
 				}
 				expansion += childLines.join("," + newLine) + newLine + indentation + "]";
 				return expansion;
-            } else if (Object.prototype.toString.call(obj) == "[object Date]") {
-                return obj.toString();
+			} else if (Object.prototype.toString.call(obj) == "[object Date]") {
+				return obj.toString();
 			} else if (typeof obj == "object" && depth > 0) {
 				objectsExpanded.push(obj);
 				expansion = "{" + newLine;
@@ -1816,11 +1752,11 @@ var log4javascript = (function() {
 									fieldIndex = fieldIndex - 1;
 								}
 							}
-                            var val = this.customFields[fieldIndex].value;
-                            if (typeof val == "function") {
-                                val = val(this, loggingEvent);
-                            }
-                            replacement = val;
+							var val = this.customFields[fieldIndex].value;
+							if (typeof val == "function") {
+								val = val(this, loggingEvent);
+							}
+							replacement = val;
 						}
 						break;
 					case "n": // New line
@@ -1875,11 +1811,11 @@ var log4javascript = (function() {
 	};
 
 	PatternLayout.prototype.ignoresThrowable = function() {
-	    return true;
+		return true;
 	};
 
 	PatternLayout.prototype.toString = function() {
-	    return "PatternLayout";
+		return "PatternLayout";
 	};
 
 	log4javascript.PatternLayout = PatternLayout;
@@ -1914,18 +1850,18 @@ var log4javascript = (function() {
 	BrowserConsoleAppender.prototype.append = function(loggingEvent) {
 		var appender = this;
 
-		var getFormattedMessage = function() {
+		var getFormattedMessage = function(concatenate) {
 			var formattedMessage = appender.getLayout().formatWithException(loggingEvent);
-			return (typeof formattedMessage == "string") ? [formattedMessage] : formattedMessage;
+			return (typeof formattedMessage == "string") ?
+				(concatenate ? formattedMessage : [formattedMessage]) :
+				(concatenate ? formattedMessage.join(" ") : formattedMessage);
 		};
 
-		var console;
+		var console = window.console;
 
-		if ( (console = window.console) && console.log) { // Safari and Firebug
-			var formattedMessage = getFormattedMessage();
-
+		if (console && console.log) {
 			// Log to Firebug or the browser console using specific logging
-			// methods or revert to console.log otherwise 
+			// methods or revert to console.log otherwise
 			var consoleMethodName;
 
 			if (console.debug && Level.DEBUG.isGreaterOrEqual(loggingEvent.level)) {
@@ -1940,13 +1876,13 @@ var log4javascript = (function() {
 				consoleMethodName = "log";
 			}
 
-			if (console[consoleMethodName].apply) {
-				console[consoleMethodName].apply(console, formattedMessage);
+			if (typeof console[consoleMethodName].apply == "function") {
+				console[consoleMethodName].apply(console, getFormattedMessage(false));
 			} else {
-				console[consoleMethodName](formattedMessage);
+				console[consoleMethodName]( getFormattedMessage(true) );
 			}
 		} else if ((typeof opera != "undefined") && opera.postError) { // Opera
-			opera.postError(getFormattedMessage());
+			opera.postError( getFormattedMessage(true) );
 		}
 	};
 
@@ -2230,10 +2166,6 @@ var log4javascript = (function() {
 			try {
 				var xmlHttp = getXmlHttp(xmlHttpErrorHandler);
 				if (isSupported) {
-					// Add withCredentials to facilitate CORS requests with cookies
-					if (withCredentials && withCredentialsSupported) {
-						xmlHttp.withCredentials = true;
-					}
 					xmlHttp.onreadystatechange = function() {
 						if (xmlHttp.readyState == 4) {
 							if (isHttpRequestSuccessful(xmlHttp)) {
@@ -2256,6 +2188,10 @@ var log4javascript = (function() {
 						}
 					};
 					xmlHttp.open("POST", url, true);
+					// Add withCredentials to facilitate CORS requests with cookies
+					if (withCredentials && withCredentialsSupported) {
+						xmlHttp.withCredentials = true;
+					}
 					try {
 						for (var i = 0, header; header = headers[i++]; ) {
 							xmlHttp.setRequestHeader(header.name, header.value);
@@ -2318,9 +2254,7 @@ var log4javascript = (function() {
 					if (oldBeforeUnload) {
 						oldBeforeUnload();
 					}
-					if (sendAllRemaining()) {
-						return "Sending log messages";
-					}
+					sendAllRemaining();
 				};
 			}
 			// Start timer
@@ -2355,15 +2289,15 @@ var log4javascript = (function() {
 	// PopUpAppender and InPageAppender related
 
 	function setCookie(name, value, days, path) {
-	    var expires;
-	    path = path ? "; path=" + path : "";
+		var expires;
+		path = path ? "; path=" + path : "";
 		if (days) {
 			var date = new Date();
 			date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
 			expires = "; expires=" + date.toGMTString();
 		} else {
-		    expires = "";
-	    }
+			expires = "";
+		}
 		document.cookie = escape(name) + "=" + escape(value) + expires + path;
 	}
 
@@ -2373,11 +2307,11 @@ var log4javascript = (function() {
 		for (var i = 0, len = ca.length; i < len; i++) {
 			var c = ca[i];
 			while (c.charAt(0) === " ") {
-			    c = c.substring(1, c.length);
+				c = c.substring(1, c.length);
 			}
 			if (c.indexOf(nameEquals) === 0) {
-			    return unescape(c.substring(nameEquals.length, c.length));
-	        }
+				return unescape(c.substring(nameEquals.length, c.length));
+			}
 		}
 		return null;
 	}
@@ -2392,8 +2326,8 @@ var log4javascript = (function() {
 				return (lastSlash == -1) ? "" : scripts[i].src.substr(0, lastSlash + 1);
 			}
 		}
-        return null;
-    }
+		return null;
+	}
 
 	function isLoaded(win) {
 		try {
@@ -2576,7 +2510,7 @@ var log4javascript = (function() {
 '					}',
 '				} else {',
 '					var groupElementContainer = this;',
-'					',
+'',
 '					this.mainDiv = document.createElement("div");',
 '					this.mainDiv.className = "group";',
 '',
@@ -2588,7 +2522,7 @@ var log4javascript = (function() {
 '					this.expander.unselectable = true;',
 '					var expanderText = this.group.expanded ? "-" : "+";',
 '					this.expanderTextNode = this.expander.appendChild(document.createTextNode(expanderText));',
-'					',
+'',
 '					this.headingDiv.appendChild(document.createTextNode(" " + this.group.name));',
 '',
 '					this.contentDiv = this.mainDiv.appendChild(document.createElement("div"));',
@@ -3046,7 +2980,7 @@ var log4javascript = (function() {
 '				rootGroup = new Group("root", true);',
 '				rootGroup.render();',
 '				currentGroup = rootGroup;',
-'				',
+'',
 '				setCommandInputWidth();',
 '				setLogContainerHeight();',
 '				toggleLoggingEnabled();',
@@ -3171,9 +3105,9 @@ var log4javascript = (function() {
 '',
 '			function LogItemContentReverser() {',
 '			}',
-'			',
+'',
 '			LogItemContentReverser.prototype = new LogItemVisitor();',
-'			',
+'',
 '			LogItemContentReverser.prototype.visitGroup = function(group) {',
 '				group.reverseChildren();',
 '				this.visitChildren(group);',
@@ -4193,10 +4127,10 @@ var log4javascript = (function() {
 '',
 '			if (!Array.prototype.push) {',
 '				Array.prototype.push = function() {',
-'			        for (var i = 0, len = arguments.length; i < len; i++){',
-'			            this[this.length] = arguments[i];',
-'			        }',
-'			        return this.length;',
+'					for (var i = 0, len = arguments.length; i < len; i++){',
+'						this[this.length] = arguments[i];',
+'					}',
+'					return this.length;',
 '				};',
 '			}',
 '',
@@ -4544,7 +4478,7 @@ var log4javascript = (function() {
 '			span.pre {',
 '				white-space: pre;',
 '			}',
-'			',
+'',
 '			pre.unwrapped {',
 '				display: inline !important;',
 '			}',
@@ -4728,8 +4662,7 @@ var log4javascript = (function() {
 			var showCommandLine = this.defaults.showCommandLine;
 			var commandLineObjectExpansionDepth = this.defaults.commandLineObjectExpansionDepth;
 			var showHideButton = this.defaults.showHideButton;
-            var showCloseButton = this.defaults.showCloseButton;
-            var showLogEntryDeleteButtons = this.defaults.showLogEntryDeleteButtons;
+			var showCloseButton = this.defaults.showCloseButton;
 
 			this.setLayout(this.defaults.layout);
 
@@ -4882,14 +4815,14 @@ var log4javascript = (function() {
 				}
 			};
 
-            this.group = function(name, initiallyExpanded) {
+			this.group = function(name, initiallyExpanded) {
 				if (isSupported) {
 					queuedLoggingEvents.push(new QueuedGroup(name, initiallyExpanded));
 					checkAndAppend();
 				}
 			};
 
-            this.groupEnd = function() {
+			this.groupEnd = function() {
 				if (isSupported) {
 					queuedLoggingEvents.push(new QueuedGroupEnd());
 					checkAndAppend();
@@ -4897,7 +4830,6 @@ var log4javascript = (function() {
 			};
 
 			var appendQueuedLoggingEvents = function() {
-				var currentLoggingEvent;
 				while (queuedLoggingEvents.length > 0) {
 					queuedLoggingEvents.shift().append();
 				}
@@ -5009,9 +4941,9 @@ var log4javascript = (function() {
 						window.evalExpr = expr;
 						commandWindow.execScript("window.result=eval(window.evalExpr);");
 						result = window.result;
- 					} else {
- 						result = commandWindow.eval(expr);
- 					}
+					} else {
+						result = commandWindow.eval(expr);
+					}
 					commandOutput = isUndefined(result) ? result : formatObjectExpansion(result, commandLineObjectExpansionDepth);
 
 					// Restore variables in the command window to their original state
@@ -5517,8 +5449,7 @@ var log4javascript = (function() {
 			commandLineObjectExpansionDepth: 1,
 			showHideButton: false,
 			showCloseButton: true,
-            showLogEntryDeleteButtons: true,
-            useDocumentWrite: true
+			useDocumentWrite: true
 		};
 
 		PopUpAppender.prototype.toString = function() {
@@ -5550,8 +5481,8 @@ var log4javascript = (function() {
 			commandLineObjectExpansionDepth: 1,
 			showHideButton: false,
 			showCloseButton: false,
-            showLogEntryDeleteButtons: true,
-            useDocumentWrite: true
+			showLogEntryDeleteButtons: true,
+			useDocumentWrite: true
 		};
 
 		InPageAppender.prototype.toString = function() {
@@ -5642,7 +5573,6 @@ var log4javascript = (function() {
 			function getStyleAttributeValue(el) {
 				var stylePairs = el.style.cssText.split(";");
 				var styleValue = "";
-				var isFirst = true;
 				for (var j = 0, len = stylePairs.length; j < len; j++) {
 					var nameValueBits = stylePairs[j].split(":");
 					var props = [];
@@ -5663,11 +5593,12 @@ var log4javascript = (function() {
 						return RegExp.$1.toLowerCase();
 					}
 				}
-                return "";
+				return "";
 			}
 
 			var lt = "<";
 			var gt = ">";
+			var i, len;
 
 			if (includeRootNode && rootNode.nodeType != nodeTypes.DOCUMENT_FRAGMENT_NODE) {
 				switch (rootNode.nodeType) {
@@ -5713,7 +5644,7 @@ var log4javascript = (function() {
 							var childStartNewLine = !(rootNode.childNodes.length === 1 &&
 								rootNode.childNodes[0].nodeType === nodeTypes.TEXT_NODE);
 							var childPreformatted = array_contains(preFormattedElements, tagName);
-							for (var i = 0, len = rootNode.childNodes.length; i < len; i++) {
+							for (i = 0, len = rootNode.childNodes.length; i < len; i++) {
 								xhtml += getXhtml(rootNode.childNodes[i], true, indentation + indentationUnit,
 									childStartNewLine, childPreformatted);
 							}
@@ -5732,7 +5663,7 @@ var log4javascript = (function() {
 								// Trim whitespace from each line of the text node
 								var lines = splitIntoLines(trim(rootNode.nodeValue));
 								var trimmedLines = [];
-								for (var i = 0, len = lines.length; i < len; i++) {
+								for (i = 0, len = lines.length; i < len; i++) {
 									trimmedLines[i] = trim(lines[i]);
 								}
 								xhtml = trimmedLines.join(newLine + indentation);
@@ -5747,7 +5678,7 @@ var log4javascript = (function() {
 					case nodeTypes.DOCUMENT_NODE:
 						xhtml = "";
 						// Add output for childNodes collection (which doesn't include attribute nodes)
-						for (var i = 0, len = rootNode.childNodes.length; i < len; i++) {
+						for (i = 0, len = rootNode.childNodes.length; i < len; i++) {
 							xhtml += getXhtml(rootNode.childNodes[i], true, indentation);
 						}
 						return xhtml;
@@ -5757,7 +5688,7 @@ var log4javascript = (function() {
 			} else {
 				xhtml = "";
 				// Add output for childNodes collection (which doesn't include attribute nodes)
-				for (var i = 0, len = rootNode.childNodes.length; i < len; i++) {
+				for (i = 0, len = rootNode.childNodes.length; i < len; i++) {
 					xhtml += getXhtml(rootNode.childNodes[i], true, indentation + indentationUnit);
 				}
 				return xhtml;
@@ -5780,7 +5711,6 @@ var log4javascript = (function() {
 			ConsoleAppender.addGlobalCommandLineFunction("dirxml", function(appender, args, returnValue) {
 				var lines = [];
 				for (var i = 0, len = args.length; i < len; i++) {
-					var win = appender.getCommandWindow();
 					lines[i] = getXhtml(args[i]);
 				}
 				return lines.join(newLine + newLine);
@@ -5858,35 +5788,39 @@ var log4javascript = (function() {
 	})();
 
 	/* ---------------------------------------------------------------------- */
+
+	function createDefaultLogger() {
+		var logger = log4javascript.getLogger(defaultLoggerName);
+		var a = new log4javascript.PopUpAppender();
+		logger.addAppender(a);
+		return logger;
+	}
+
+	/* ---------------------------------------------------------------------- */
 	// Main load
 
-   log4javascript.setDocumentReady = function() {
-       pageLoaded = true;
-       log4javascript.dispatchEvent("load", {});
-   };
+	log4javascript.setDocumentReady = function() {
+		pageLoaded = true;
+		log4javascript.dispatchEvent("load", {});
+	};
 
-    if (window.addEventListener) {
-        window.addEventListener("load", log4javascript.setDocumentReady, false);
-    } else if (window.attachEvent) {
-        window.attachEvent("onload", log4javascript.setDocumentReady);
-    } else {
-        var oldOnload = window.onload;
-        if (typeof window.onload != "function") {
-            window.onload = log4javascript.setDocumentReady;
-        } else {
-            window.onload = function(evt) {
-                if (oldOnload) {
-                    oldOnload(evt);
-                }
-                log4javascript.setDocumentReady();
-            };
-        }
-    }
+	if (window.addEventListener) {
+		window.addEventListener("load", log4javascript.setDocumentReady, false);
+	} else if (window.attachEvent) {
+		window.attachEvent("onload", log4javascript.setDocumentReady);
+	} else {
+		var oldOnload = window.onload;
+		if (typeof window.onload != "function") {
+			window.onload = log4javascript.setDocumentReady;
+		} else {
+			window.onload = function(evt) {
+				if (oldOnload) {
+					oldOnload(evt);
+				}
+				log4javascript.setDocumentReady();
+			};
+		}
+	}
 
-    // Ensure that the log4javascript object is available in the window. This
-    // is necessary for log4javascript to be available in IE if loaded using
-    // Dojo's module system
-    window.log4javascript = log4javascript;
-
-    return log4javascript;
-})();
+	return log4javascript;
+}, this);

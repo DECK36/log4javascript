@@ -1,5 +1,5 @@
 /**
- * Copyright 2014 Tim Down.
+ * Copyright 2015 Tim Down.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -56,7 +56,7 @@ var log4javascript_stub = (function() {
 
 	log4javascript = {
 		isStub: true,
-		version: "1.4.9",
+		version: "1.4.13",
 		edition: "log4javascript_lite",
 		setEnabled: f,
 		isEnabled: f,
@@ -92,7 +92,7 @@ var log4javascript_stub = (function() {
 		FATAL: level,
 		OFF: level
 	});
-	
+
 	log4javascript.Appender.prototype.append = f;
 
 	return log4javascript;

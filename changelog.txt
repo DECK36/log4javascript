@@ -1,6 +1,21 @@
 log4javascript change log
 -------------------------
 
+1.4.13 (23/5/2015)
+- Fix for BrowserConsolerAppender regression in last version (feature request
+  14)
+
+1.4.12 (14/5/2015)
+- Fix for BrowserConsolerAppender error in IE <= 8 (issue 18)
+
+1.4.11 (19/2/2015)
+- Fix for CORS requests in IE 10+
+- Remove message when sending remaining Ajax log messages when unloading
+
+1.4.10 (28/9/2014)
+- AMD support added
+- Fix for issue 16: getDefaultLogger() broken in production edition
+
 1.4.9 (12/5/2014)
 - Fix for typo in BrowserConsoleAppender
 
@@ -31,7 +46,7 @@ log4javascript change log
   at the expense of popping up a confirm dialog. That being the case, it is now
   disabled by default.
 
-- Removed leaked global variable "initialized" 
+- Removed leaked global variable "initialized"
 
 - Fixed bugs #3528265, #3560924, #3560922, #2805479, #3510639 on Sourceforge
   Tracker
