@@ -9,6 +9,7 @@
     },
     "main": "./log4javascript.js",
     "description"    : "log4javascript",
+    "license" : "Apache-2.0",
     "keywords"       : [
         "log4javascript",
         "logging",
