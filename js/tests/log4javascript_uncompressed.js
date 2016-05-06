@@ -1,5 +1,5 @@
 /**
- * Copyright 2014 Tim Down.
+ * Copyright 2015 Tim Down.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -134,25 +134,25 @@ xn.test.suite("log4javascript tests", function(s) {
 		return "[ArrayAppender]";
 	};
 
-    s.setUp = function(t) {
-        t.logger = log4javascript.getLogger("test");
+	s.setUp = function(t) {
+		t.logger = log4javascript.getLogger("test");
 		t.logger.removeAllAppenders();
 		t.appender = new ArrayAppender();
-        t.logger.addAppender(t.appender);
-    };
+		t.logger.addAppender(t.appender);
+	};
 
-    s.tearDown = function(t) {
-        t.logger.removeAppender(t.appender);
+	s.tearDown = function(t) {
+		t.logger.removeAppender(t.appender);
 		log4javascript.resetConfiguration();
 	};
 
-    s.test("Stub script interface test", function(t) {
-        try {
-            compareObjectInterface(log4javascript, "log4javascript", log4javascript_stub, "log4javascript_stub");
-        } catch (ex) {
-            t.fail(ex);
-        }
-    });
+	s.test("Stub script interface test", function(t) {
+		try {
+			compareObjectInterface(log4javascript, "log4javascript", log4javascript_stub, "log4javascript_stub");
+		} catch (ex) {
+			t.fail(ex);
+		}
+	});
 
 	s.test("Disable log4javascript test", function(t) {
 		log4javascript.setEnabled(false);
@@ -161,26 +161,26 @@ xn.test.suite("log4javascript tests", function(s) {
 		log4javascript.setEnabled(true);
 	});
 
-    s.test("Array.splice test 1", function(t) {
-        var a = ["Marlon", "Ashley", "Darius", "Lloyd"];
-        var deletedItems = a.splice(1, 2);
-        t.assertEquals(a.join(","), "Marlon,Lloyd");
-        t.assertEquals(deletedItems.join(","), "Ashley,Darius");
-    });
+	s.test("Array.splice test 1", function(t) {
+		var a = ["Marlon", "Ashley", "Darius", "Lloyd"];
+		var deletedItems = a.splice(1, 2);
+		t.assertEquals(a.join(","), "Marlon,Lloyd");
+		t.assertEquals(deletedItems.join(","), "Ashley,Darius");
+	});
 
-    s.test("Array.splice test 2", function(t) {
-        var a = ["Marlon", "Ashley", "Darius", "Lloyd"];
-        var deletedItems = a.splice(1, 1, "Malky", "Jay");
-        t.assertEquals(a.join(","), "Marlon,Malky,Jay,Darius,Lloyd");
-        t.assertEquals(deletedItems.join(","), "Ashley");
-    });
+	s.test("Array.splice test 2", function(t) {
+		var a = ["Marlon", "Ashley", "Darius", "Lloyd"];
+		var deletedItems = a.splice(1, 1, "Malky", "Jay");
+		t.assertEquals(a.join(","), "Marlon,Malky,Jay,Darius,Lloyd");
+		t.assertEquals(deletedItems.join(","), "Ashley");
+	});
 
-    s.test("array_remove test", function(t) {
-        var array_remove = log4javascript.evalInScope("array_remove");
-        var a = ["Marlon", "Ashley", "Darius"];
-        array_remove(a, "Darius");
-        t.assertEquals(a.join(","), "Marlon,Ashley");
-    });
+	s.test("array_remove test", function(t) {
+		var array_remove = log4javascript.evalInScope("array_remove");
+		var a = ["Marlon", "Ashley", "Darius"];
+		array_remove(a, "Darius");
+		t.assertEquals(a.join(","), "Marlon,Ashley");
+	});
 
 	s.test("array_remove with empty array test", function(t) {
 		var array_remove = log4javascript.evalInScope("array_remove");
@@ -189,20 +189,20 @@ xn.test.suite("log4javascript tests", function(s) {
 		t.assertEquals(a.join(","), "");
 	});
 
-    s.test("Logger logging test", function(t) {
-        // Should log since the default level for loggers is DEBUG and
-        // the default threshold for appenders is ALL
-        t.logger.debug("TEST");
-        t.assertEquals(t.appender.logMessages.length, 1);
-    });
+	s.test("Logger logging test", function(t) {
+		// Should log since the default level for loggers is DEBUG and
+		// the default threshold for appenders is ALL
+		t.logger.debug("TEST");
+		t.assertEquals(t.appender.logMessages.length, 1);
+	});
 
-    s.test("Logger levels test", function(t) {
-        var originalLevel = t.logger.getEffectiveLevel();
-        t.logger.setLevel(log4javascript.Level.INFO);
-        t.logger.debug("TEST");
+	s.test("Logger levels test", function(t) {
+		var originalLevel = t.logger.getEffectiveLevel();
+		t.logger.setLevel(log4javascript.Level.INFO);
+		t.logger.debug("TEST");
 		t.logger.setLevel(originalLevel);
-        t.assertEquals(t.appender.logMessages.length, 0);
-    });
+		t.assertEquals(t.appender.logMessages.length, 0);
+	});
 
 	s.test("Logger getEffectiveLevel inheritance test 1", function(t) {
 		var parentLogger = log4javascript.getLogger("test1");
@@ -296,22 +296,22 @@ xn.test.suite("log4javascript tests", function(s) {
 	});
 
 	s.test("Appender threshold test", function(t) {
-        t.appender.setThreshold(log4javascript.Level.INFO);
-        t.logger.debug("TEST");
-        t.assertEquals(t.appender.logMessages.length, 0);
-    });
+		t.appender.setThreshold(log4javascript.Level.INFO);
+		t.logger.debug("TEST");
+		t.assertEquals(t.appender.logMessages.length, 0);
+	});
 
-    s.test("Basic appender / layout test", function(t) {
-        t.logger.debug("TEST");
+	s.test("Basic appender / layout test", function(t) {
+		t.logger.debug("TEST");
 		t.assertEquals(t.appender.logMessages[0], "TEST");
-    });
+	});
 
 	s.test("Appender uniqueness within logger test", function(t) {
 		// Add the same appender to the logger for a second time
 		t.logger.addAppender(t.appender);
-        t.logger.debug("TEST");
-        t.assertEquals(t.appender.logMessages.length, 1);
-    });
+		t.logger.debug("TEST");
+		t.assertEquals(t.appender.logMessages.length, 1);
+	});
 
 	s.test("Logger remove appender test", function(t) {
 		t.logger.debug("TEST");
@@ -331,44 +331,44 @@ xn.test.suite("log4javascript tests", function(s) {
 		testLayoutWithVariables(layout, t);
 	});
 
-    s.test("SimpleLayout test", function(t) {
-        t.appender.setLayout(new log4javascript.SimpleLayout());
-        t.logger.debug("TEST");
-        t.assertEquals(t.appender.logMessages[0], "DEBUG - TEST");
-    });
+	s.test("SimpleLayout test", function(t) {
+		t.appender.setLayout(new log4javascript.SimpleLayout());
+		t.logger.debug("TEST");
+		t.assertEquals(t.appender.logMessages[0], "DEBUG - TEST");
+	});
 	s.test("NullLayout format test", function(t) {
 		var layout = new log4javascript.NullLayout();
 		testLayoutWithVariables(layout, t);
 	});
 
-    s.test("NullLayout test", function(t) {
-        t.appender.setLayout(new log4javascript.NullLayout());
-        t.logger.debug("TEST");
-        t.assertEquals(t.appender.logMessages[0], "TEST");
-    });
+	s.test("NullLayout test", function(t) {
+		t.appender.setLayout(new log4javascript.NullLayout());
+		t.logger.debug("TEST");
+		t.assertEquals(t.appender.logMessages[0], "TEST");
+	});
 	s.test("XmlLayout format test", function(t) {
 		var layout = new log4javascript.XmlLayout();
 		testLayoutWithVariables(layout, t);
 	});
 
-    s.test("XmlLayout test", function(t) {
-        t.appender.setLayout(new log4javascript.XmlLayout());
-        t.logger.debug("TEST");
-        t.assertRegexMatches(/^<log4javascript:event logger="test" timestamp="\d+" level="DEBUG">\s*<log4javascript:message><!\[CDATA\[TEST\]\]><\/log4javascript:message>\s*<\/log4javascript:event>\s*$/, t.appender.logMessages[0]);
-    });
+	s.test("XmlLayout test", function(t) {
+		t.appender.setLayout(new log4javascript.XmlLayout());
+		t.logger.debug("TEST");
+		t.assertRegexMatches(/^<log4javascript:event logger="test" timestamp="\d+" level="DEBUG">\s*<log4javascript:message><!\[CDATA\[TEST\]\]><\/log4javascript:message>\s*<\/log4javascript:event>\s*$/, t.appender.logMessages[0]);
+	});
 
-    s.test("XmlLayout with exception test", function(t) {
-        t.appender.setLayout(new log4javascript.XmlLayout());
-        t.logger.debug("TEST", new Error("Test error"));
-        t.assertRegexMatches(/^<log4javascript:event logger="test" timestamp="\d+" level="DEBUG">\s*<log4javascript:message><!\[CDATA\[TEST\]\]><\/log4javascript:message>\s*<log4javascript:exception>\s*<!\[CDATA\[.*\]\]><\/log4javascript:exception>\s*<\/log4javascript:event>\s*$/, t.appender.logMessages[0]);
-    });
+	s.test("XmlLayout with exception test", function(t) {
+		t.appender.setLayout(new log4javascript.XmlLayout());
+		t.logger.debug("TEST", new Error("Test error"));
+		t.assertRegexMatches(/^<log4javascript:event logger="test" timestamp="\d+" level="DEBUG">\s*<log4javascript:message><!\[CDATA\[TEST\]\]><\/log4javascript:message>\s*<log4javascript:exception>\s*<!\[CDATA\[.*\]\]><\/log4javascript:exception>\s*<\/log4javascript:event>\s*$/, t.appender.logMessages[0]);
+	});
 
 	var setUpXmlLayoutMillisecondsTest = function(t) {
 		t.date = new Date();
 		t.timeInMilliseconds = t.date.getTime();
 		t.timeInSeconds = Math.floor(t.timeInMilliseconds / 1000);
 		t.milliseconds = t.date.getMilliseconds();
-		
+
 		t.loggingEvent = new log4javascript.LoggingEvent(t.logger, t.date, log4javascript.Level.DEBUG, ["TEST"], null);
 		t.layout = new log4javascript.XmlLayout();
 	}
@@ -377,29 +377,29 @@ xn.test.suite("log4javascript tests", function(s) {
 		setUpXmlLayoutMillisecondsTest(t);
 
 		// Test default (i.e. timestamps in milliseconds) first
-        var regex = new RegExp('^<log4javascript:event logger="test" timestamp="' + t.timeInMilliseconds + '" level="DEBUG">\\s*<log4javascript:message><!\\[CDATA\\[TEST\\]\\]></log4javascript:message>\\s*</log4javascript:event>\\s*$');
-        t.assertRegexMatches(regex, t.layout.format(t.loggingEvent));
+		var regex = new RegExp('^<log4javascript:event logger="test" timestamp="' + t.timeInMilliseconds + '" level="DEBUG">\\s*<log4javascript:message><!\\[CDATA\\[TEST\\]\\]></log4javascript:message>\\s*</log4javascript:event>\\s*$');
+		t.assertRegexMatches(regex, t.layout.format(t.loggingEvent));
 	});
-	
+
 	s.test("XmlLayout seconds/milliseconds test 2", function(t) {
 		setUpXmlLayoutMillisecondsTest(t);
 
-        // Change the global setting
-        log4javascript.setTimeStampsInMilliseconds(false);
-        var formatted = t.layout.format(t.loggingEvent);
-        log4javascript.setTimeStampsInMilliseconds(true);
-        var regex = new RegExp('^<log4javascript:event logger="test" timestamp="' + t.timeInSeconds + '" milliseconds="' + t.milliseconds + '" level="DEBUG">\\s*<log4javascript:message><!\\[CDATA\\[TEST\\]\\]></log4javascript:message>\\s*</log4javascript:event>\\s*$');
-        t.assertRegexMatches(regex, formatted);
+		// Change the global setting
+		log4javascript.setTimeStampsInMilliseconds(false);
+		var formatted = t.layout.format(t.loggingEvent);
+		log4javascript.setTimeStampsInMilliseconds(true);
+		var regex = new RegExp('^<log4javascript:event logger="test" timestamp="' + t.timeInSeconds + '" milliseconds="' + t.milliseconds + '" level="DEBUG">\\s*<log4javascript:message><!\\[CDATA\\[TEST\\]\\]></log4javascript:message>\\s*</log4javascript:event>\\s*$');
+		t.assertRegexMatches(regex, formatted);
 	});
 
 	s.test("XmlLayout seconds/milliseconds test 3", function(t) {
 		setUpXmlLayoutMillisecondsTest(t);
 
-        // Change the layout setting
-        t.layout.setTimeStampsInMilliseconds(false);
-        var formatted = t.layout.format(t.loggingEvent);
-        var regex = new RegExp('^<log4javascript:event logger="test" timestamp="' + t.timeInSeconds + '" milliseconds="' + t.milliseconds + '" level="DEBUG">\\s*<log4javascript:message><!\\[CDATA\\[TEST\\]\\]></log4javascript:message>\\s*</log4javascript:event>\\s*$');
-        t.assertRegexMatches(regex, formatted);
+		// Change the layout setting
+		t.layout.setTimeStampsInMilliseconds(false);
+		var formatted = t.layout.format(t.loggingEvent);
+		var regex = new RegExp('^<log4javascript:event logger="test" timestamp="' + t.timeInSeconds + '" milliseconds="' + t.milliseconds + '" level="DEBUG">\\s*<log4javascript:message><!\\[CDATA\\[TEST\\]\\]></log4javascript:message>\\s*</log4javascript:event>\\s*$');
+		t.assertRegexMatches(regex, formatted);
 	});
 	s.test("escapeNewLines test", function(t) {
 		var escapeNewLines = log4javascript.evalInScope("escapeNewLines");
@@ -412,55 +412,55 @@ xn.test.suite("log4javascript tests", function(s) {
 		testLayoutWithVariables(layout, t);
 	});
 
-    s.test("JsonLayout test", function(t) {
-        t.appender.setLayout(new log4javascript.JsonLayout());
-        t.logger.debug("TEST");
-        t.assertRegexMatches(/^{"logger":"test","timestamp":\d+,"level":"DEBUG","url":".*","message":"TEST"}$/, t.appender.logMessages[0]);
-    });
+	s.test("JsonLayout test", function(t) {
+		t.appender.setLayout(new log4javascript.JsonLayout());
+		t.logger.debug("TEST");
+		t.assertRegexMatches(/^{"logger":"test","timestamp":\d+,"level":"DEBUG","url":".*","message":"TEST"}$/, t.appender.logMessages[0]);
+	});
 
-    s.test("JsonLayout JSON validity test", function(t) {
-        t.appender.setLayout(new log4javascript.JsonLayout());
-        t.logger.debug("TEST");
-        eval("var o = " + t.appender.logMessages[0]);
-        t.assertEquals(o.message, "TEST");
-    });
+	s.test("JsonLayout JSON validity test", function(t) {
+		t.appender.setLayout(new log4javascript.JsonLayout());
+		t.logger.debug("TEST");
+		eval("var o = " + t.appender.logMessages[0]);
+		t.assertEquals(o.message, "TEST");
+	});
 
-    s.test("JsonLayout with number type message test", function(t) {
-        t.appender.setLayout(new log4javascript.JsonLayout());
-        t.logger.debug(15);
-        t.assertRegexMatches(/^{"logger":"test","timestamp":\d+,"level":"DEBUG","url":".*","message":15}$/, t.appender.logMessages[0]);
-    });
+	s.test("JsonLayout with number type message test", function(t) {
+		t.appender.setLayout(new log4javascript.JsonLayout());
+		t.logger.debug(15);
+		t.assertRegexMatches(/^{"logger":"test","timestamp":\d+,"level":"DEBUG","url":".*","message":15}$/, t.appender.logMessages[0]);
+	});
 
-    s.test("JsonLayout with object type message test", function(t) {
-        t.appender.setLayout(new log4javascript.JsonLayout());
-        t.logger.debug({});
-        t.assertRegexMatches(/^{"logger":"test","timestamp":\d+,"level":"DEBUG","url":".*","message":"\[object Object\]"}$/, t.appender.logMessages[0]);
-    });
+	s.test("JsonLayout with object type message test", function(t) {
+		t.appender.setLayout(new log4javascript.JsonLayout());
+		t.logger.debug({});
+		t.assertRegexMatches(/^{"logger":"test","timestamp":\d+,"level":"DEBUG","url":".*","message":"\[object Object\]"}$/, t.appender.logMessages[0]);
+	});
 
-    s.test("JsonLayout with boolean type message test", function(t) {
-        t.appender.setLayout(new log4javascript.JsonLayout());
-        t.logger.debug(false);
-        t.assertRegexMatches(/^{"logger":"test","timestamp":\d+,"level":"DEBUG","url":".*","message":false}$/, t.appender.logMessages[0]);
-    });
+	s.test("JsonLayout with boolean type message test", function(t) {
+		t.appender.setLayout(new log4javascript.JsonLayout());
+		t.logger.debug(false);
+		t.assertRegexMatches(/^{"logger":"test","timestamp":\d+,"level":"DEBUG","url":".*","message":false}$/, t.appender.logMessages[0]);
+	});
 
-    s.test("JsonLayout with quote test", function(t) {
-        t.appender.setLayout(new log4javascript.JsonLayout());
-        t.logger.debug("TE\"S\"T");
-        t.assertRegexMatches(/^{"logger":"test","timestamp":\d+,"level":"DEBUG","url":".*","message":"TE\\"S\\"T"}$/, t.appender.logMessages[0]);
-    });
+	s.test("JsonLayout with quote test", function(t) {
+		t.appender.setLayout(new log4javascript.JsonLayout());
+		t.logger.debug("TE\"S\"T");
+		t.assertRegexMatches(/^{"logger":"test","timestamp":\d+,"level":"DEBUG","url":".*","message":"TE\\"S\\"T"}$/, t.appender.logMessages[0]);
+	});
 
-    s.test("JsonLayout with exception test", function(t) {
-        t.appender.setLayout(new log4javascript.JsonLayout());
-        t.logger.debug("TEST", new Error("Test error"));
-        t.assertRegexMatches(/^{"logger":"test","timestamp":\d+,"level":"DEBUG","url":".*","message":"TEST","exception":.*}$/, t.appender.logMessages[0]);
-    });
+	s.test("JsonLayout with exception test", function(t) {
+		t.appender.setLayout(new log4javascript.JsonLayout());
+		t.logger.debug("TEST", new Error("Test error"));
+		t.assertRegexMatches(/^{"logger":"test","timestamp":\d+,"level":"DEBUG","url":".*","message":"TEST","exception":.*}$/, t.appender.logMessages[0]);
+	});
 
 	var setUpJsonLayoutMillisecondsTest = function(t) {
 		t.date = new Date();
 		t.timeInMilliseconds = t.date.getTime();
 		t.timeInSeconds = Math.floor(t.timeInMilliseconds / 1000);
 		t.milliseconds = t.date.getMilliseconds();
-		
+
 		t.loggingEvent = new log4javascript.LoggingEvent(t.logger, t.date, log4javascript.Level.DEBUG, ["TEST"], null);
 		t.layout = new log4javascript.JsonLayout();
 	};
@@ -469,52 +469,52 @@ xn.test.suite("log4javascript tests", function(s) {
 		setUpJsonLayoutMillisecondsTest(t);
 
 		// Test default (i.e. timestamps in milliseconds) first
-        var regex = new RegExp('^{"logger":"test","timestamp":' + t.timeInMilliseconds + ',"level":"DEBUG","url":".*","message":"TEST"}$');
-        t.assertRegexMatches(regex, t.layout.format(t.loggingEvent));
+		var regex = new RegExp('^{"logger":"test","timestamp":' + t.timeInMilliseconds + ',"level":"DEBUG","url":".*","message":"TEST"}$');
+		t.assertRegexMatches(regex, t.layout.format(t.loggingEvent));
 	});
-	
+
 	s.test("JsonLayout seconds/milliseconds test 2", function(t) {
 		setUpJsonLayoutMillisecondsTest(t);
 
-        // Change the global setting
-        log4javascript.setTimeStampsInMilliseconds(false);
-        var formatted = t.layout.format(t.loggingEvent);
-        log4javascript.setTimeStampsInMilliseconds(true);
-        var regex = new RegExp('^{"logger":"test","timestamp":' + t.timeInSeconds + ',"level":"DEBUG","url":".*","message":"TEST","milliseconds":' + t.milliseconds + '}$');
-        t.assertRegexMatches(regex, formatted);
+		// Change the global setting
+		log4javascript.setTimeStampsInMilliseconds(false);
+		var formatted = t.layout.format(t.loggingEvent);
+		log4javascript.setTimeStampsInMilliseconds(true);
+		var regex = new RegExp('^{"logger":"test","timestamp":' + t.timeInSeconds + ',"level":"DEBUG","url":".*","message":"TEST","milliseconds":' + t.milliseconds + '}$');
+		t.assertRegexMatches(regex, formatted);
 	});
 
 	s.test("JsonLayout seconds/milliseconds test 3", function(t) {
 		setUpJsonLayoutMillisecondsTest(t);
 
-        // Change the layout setting
-        t.layout.setTimeStampsInMilliseconds(false);
-        var formatted = t.layout.format(t.loggingEvent);
-        var regex = new RegExp('^{"logger":"test","timestamp":' + t.timeInSeconds + ',"level":"DEBUG","url":".*","message":"TEST","milliseconds":' + t.milliseconds + '}$');
-        t.assertRegexMatches(regex, formatted);
+		// Change the layout setting
+		t.layout.setTimeStampsInMilliseconds(false);
+		var formatted = t.layout.format(t.loggingEvent);
+		var regex = new RegExp('^{"logger":"test","timestamp":' + t.timeInSeconds + ',"level":"DEBUG","url":".*","message":"TEST","milliseconds":' + t.milliseconds + '}$');
+		t.assertRegexMatches(regex, formatted);
 	});
 	s.test("HttpPostDataLayout format test", function(t) {
 		var layout = new log4javascript.HttpPostDataLayout();
 		testLayoutWithVariables(layout, t);
 	});
 
-    s.test("HttpPostDataLayout test", function(t) {
-        t.appender.setLayout(new log4javascript.HttpPostDataLayout());
-        t.logger.debug("TEST");
-        t.assertRegexMatches(/^logger=test&timestamp=\d+&level=DEBUG&url=.*&message=TEST$/, t.appender.logMessages[0]);
-    });
+	s.test("HttpPostDataLayout test", function(t) {
+		t.appender.setLayout(new log4javascript.HttpPostDataLayout());
+		t.logger.debug("TEST");
+		t.assertRegexMatches(/^logger=test&timestamp=\d+&level=DEBUG&url=.*&message=TEST$/, t.appender.logMessages[0]);
+	});
 
-    s.test("HttpPostDataLayout URL encoding test", function(t) {
-        t.appender.setLayout(new log4javascript.HttpPostDataLayout());
-        t.logger.debug("TEST +\"1\"");
-        t.assertRegexMatches(/^logger=test&timestamp=\d+&level=DEBUG&url=.*&message=TEST%20%2B%221%22$/, t.appender.logMessages[0]);
-    });
+	s.test("HttpPostDataLayout URL encoding test", function(t) {
+		t.appender.setLayout(new log4javascript.HttpPostDataLayout());
+		t.logger.debug("TEST +\"1\"");
+		t.assertRegexMatches(/^logger=test&timestamp=\d+&level=DEBUG&url=.*&message=TEST%20%2B%221%22$/, t.appender.logMessages[0]);
+	});
 
-    s.test("HttpPostDataLayout with exception test", function(t) {
-        t.appender.setLayout(new log4javascript.HttpPostDataLayout());
-        t.logger.debug("TEST", new Error("Test error"));
-        t.assertRegexMatches(/^logger=test&timestamp=\d+&level=DEBUG&url=.*&message=TEST&exception=.*$/, t.appender.logMessages[0]);
-    });
+	s.test("HttpPostDataLayout with exception test", function(t) {
+		t.appender.setLayout(new log4javascript.HttpPostDataLayout());
+		t.logger.debug("TEST", new Error("Test error"));
+		t.assertRegexMatches(/^logger=test&timestamp=\d+&level=DEBUG&url=.*&message=TEST&exception=.*$/, t.appender.logMessages[0]);
+	});
 
 	(function() {
 		var formatObjectExpansion = log4javascript.evalInScope("formatObjectExpansion");
@@ -553,11 +553,11 @@ xn.test.suite("log4javascript tests", function(s) {
 				"  1.2," + newLine +
 				"  A string," + newLine +
 				"  [" + newLine +
-				"    1," + newLine +
-				"    test" + newLine +
+				"	1," + newLine +
+				"	test" + newLine +
 				"  ]," + newLine +
 				"  {" + newLine +
-				"    a: [object Object]" + newLine +
+				"	a: [object Object]" + newLine +
 				"  }" + newLine +
 				"]"
 			);
@@ -567,7 +567,7 @@ xn.test.suite("log4javascript tests", function(s) {
 			var obj = {
 				STRING: "A string"
 			};
-			t.assertEquals(formatObjectExpansion(obj, 1), 
+			t.assertEquals(formatObjectExpansion(obj, 1),
 				"{" + newLine +
 				"  STRING: A string" + newLine +
 				"}"
@@ -577,69 +577,69 @@ xn.test.suite("log4javascript tests", function(s) {
 		s.test("formatObjectExpansion simple circular object test", function(t) {
 			var obj = {};
 			obj.a = obj;
-			
-			t.assertEquals(formatObjectExpansion(obj, 2), 
+
+			t.assertEquals(formatObjectExpansion(obj, 2),
 				"{" + newLine +
 				"  a: [object Object] [already expanded]" + newLine +
 				"}"
 			);
 		});
-	})();    /* ---------------------------------------------------------- */
+	})();	/* ---------------------------------------------------------- */
 
-    var getSampleDate = function() {
-        var date = new Date();
-        date.setFullYear(2006);
-        date.setMonth(7);
-        date.setDate(30);
-        date.setHours(15);
-        date.setMinutes(38);
-        date.setSeconds(45);
-        return date;
-    };
+	var getSampleDate = function() {
+		var date = new Date();
+		date.setFullYear(2006);
+		date.setMonth(7);
+		date.setDate(30);
+		date.setHours(15);
+		date.setMinutes(38);
+		date.setSeconds(45);
+		return date;
+	};
 
-    /* ---------------------------------------------------------- */
+	/* ---------------------------------------------------------- */
 
-    s.test("String.replace test", function(t) {
-        t.assertEquals("Hello world".replace(/o/g, "Z"), "HellZ wZrld");
-    });
+	s.test("String.replace test", function(t) {
+		t.assertEquals("Hello world".replace(/o/g, "Z"), "HellZ wZrld");
+	});
 
 	s.test("PatternLayout format test", function(t) {
 		var layout = new log4javascript.PatternLayout();
 		testLayoutWithVariables(layout, t);
 	});
 
-    s.test("PatternLayout dates test", function(t) {
-        var layout = new log4javascript.PatternLayout("%d %d{DATE} %d{HH:ss}");
-        t.appender.setLayout(layout);
-        t.logger.debug("TEST");
-        t.assertRegexMatches(/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2},\d{3} \d{2} [A-Z][a-z]{2} \d{4} \d{2}:\d{2}:\d{2},\d{3} \d{2}:\d{2}$/, t.appender.logMessages[0]);
-    });
+	s.test("PatternLayout dates test", function(t) {
+		var layout = new log4javascript.PatternLayout("%d %d{DATE} %d{HH:ss}");
+		t.appender.setLayout(layout);
+		t.logger.debug("TEST");
+		t.assertRegexMatches(/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2},\d{3} \d{2} [A-Z][a-z]{2} \d{4} \d{2}:\d{2}:\d{2},\d{3} \d{2}:\d{2}$/, t.appender.logMessages[0]);
+	});
 
-    s.test("PatternLayout modifiers test", function(t) {
-        var layout = new log4javascript.PatternLayout("%m|%3m|%-3m|%6m|%-6m|%.2m|%1.2m|%6.8m|%-1.2m|%-6.8m|");
-        t.appender.setLayout(layout);
-        t.logger.debug("TEST");
-        t.assertEquals(t.appender.logMessages[0], "TEST|TEST|TEST|  TEST|TEST  |ST|ST|  TEST|ST|TEST  |");
-    });
+	s.test("PatternLayout modifiers test", function(t) {
+		var layout = new log4javascript.PatternLayout("%m|%3m|%-3m|%6m|%-6m|%.2m|%1.2m|%6.8m|%-1.2m|%-6.8m|");
+		t.appender.setLayout(layout);
+		t.logger.debug("TEST");
+		t.assertEquals(t.appender.logMessages[0], "TEST|TEST|TEST|  TEST|TEST  |ST|ST|  TEST|ST|TEST  |");
+	});
 
-    s.test("PatternLayout conversion characters test", function(t) {
-        var layout = new log4javascript.PatternLayout("%c %n %p %r literal %%");
-        t.appender.setLayout(layout);
-        t.logger.debug("TEST");
-        t.assertRegexMatches(/^test \s+ DEBUG \d+ literal %$/, t.appender.logMessages[0]);
-    });
+	s.test("PatternLayout conversion characters test", function(t) {
+		var layout = new log4javascript.PatternLayout("%c %n %p %r literal %%");
+		t.appender.setLayout(layout);
+		t.logger.debug("TEST");
+		t.assertRegexMatches(/^test \s+ DEBUG \d+ literal %$/, t.appender.logMessages[0]);
+	});
 
-    s.test("PatternLayout message test", function(t) {
-        var layout = new log4javascript.PatternLayout("%m{1} %m{2}");
-        t.appender.setLayout(layout);
-        var testObj = {
-            strikers: {
-                quick: "Marlon"
-            }
-        };
-        t.logger.debug(testObj);
-        t.assertEquals("{\r\n  strikers: [object Object]\r\n} {\r\n\  strikers: {\r\n    quick: Marlon\r\n  }\r\n}", t.appender.logMessages[0]);
-    });
+	s.test("PatternLayout message test", function(t) {
+		var layout = new log4javascript.PatternLayout("%m{1} %m{2}");
+		t.appender.setLayout(layout);
+		var testObj = {
+			strikers: {
+				quick: "Marlon"
+			}
+		};
+		t.logger.debug(testObj);
+		t.assertEquals("{\r\n  strikers: [object Object]\r\n} {\r\n\  strikers: {\r\n	quick: Marlon\r\n  }\r\n}", t.appender.logMessages[0]);
+	});
 	// Tests for exceptions when logging
 	s.test("Logging/grouping test", function(t) {
 		var browserConsoleAppender = new log4javascript.BrowserConsoleAppender();
@@ -652,19 +652,19 @@ xn.test.suite("log4javascript tests", function(s) {
 		t.logger.warn("TEST WARN");
 		t.logger.error("TEST ERROR");
 		t.logger.fatal("TEST FATAL");
-		
+
 		// Test with exception
 		t.logger.fatal("TEST FATAL", new Error("Fake error"));
-		
+
 		// Test multiple messages
 		t.logger.info("TEST INFO", "Second message", ["a", "b", "c"]);
-		
+
 		// Test groups
 		t.logger.group("TEST GROUP");
 		t.logger.info("TEST INFO");
 		t.logger.groupEnd("TEST GROUP");
 		t.logger.info("TEST INFO");
-		
+
 		t.logger.removeAppender(browserConsoleAppender);
 	});
 
@@ -842,8 +842,8 @@ xn.test.suite("log4javascript tests", function(s) {
 		popUpAppender.setHeight(200);
 
 		testConsoleAppender(t, popUpAppender);
-		
-		
+
+
 	});
 
 	s.test("PopUpAppender with separate console HTML file test", function(t) {
