@@ -128,7 +128,7 @@ export class Logger {
 	 * Returns all appenders which will log a message.
 	 */
 	getEffectiveAppenders(): Appender[];
-	
+
 	/**
 	 * Sets the level. Log messages of a lower level than level will not be logged. Default value is DEBUG.
 	 */
@@ -1038,6 +1038,12 @@ export class JsonLayout extends Layout {
 	 * Returns whether or not to each log message is formatted with line breaks and tabs.
 	 */
 	isReadable(): boolean;
+
+	/**
+	 * Returns whether or not to format multiple log messages as a combined single message property composed of each individual
+	 * message separated by line breaks or to format multiple messages as an array. If not specified, defaults to true.
+	 */
+	isCombinedMessages(): boolean;
 }
 
 /**
