@@ -162,7 +162,7 @@
 					}
 				} else {
 					var groupElementContainer = this;
-					
+
 					this.mainDiv = document.createElement("div");
 					this.mainDiv.className = "group";
 
@@ -174,7 +174,7 @@
 					this.expander.unselectable = true;
 					var expanderText = this.group.expanded ? "-" : "+";
 					this.expanderTextNode = this.expander.appendChild(document.createTextNode(expanderText));
-					
+
 					this.headingDiv.appendChild(document.createTextNode(" " + this.group.name));
 
 					this.contentDiv = this.mainDiv.appendChild(document.createElement("div"));
@@ -632,7 +632,7 @@
 				rootGroup = new Group("root", true);
 				rootGroup.render();
 				currentGroup = rootGroup;
-				
+
 				setCommandInputWidth();
 				setLogContainerHeight();
 				toggleLoggingEnabled();
@@ -757,9 +757,9 @@
 
 			function LogItemContentReverser() {
 			}
-			
+
 			LogItemContentReverser.prototype = new LogItemVisitor();
-			
+
 			LogItemContentReverser.prototype.visitGroup = function(group) {
 				group.reverseChildren();
 				this.visitChildren(group);
@@ -1779,10 +1779,10 @@
 
 			if (!Array.prototype.push) {
 				Array.prototype.push = function() {
-			        for (var i = 0, len = arguments.length; i < len; i++){
-			            this[this.length] = arguments[i];
-			        }
-			        return this.length;
+					for (var i = 0, len = arguments.length; i < len; i++){
+						this[this.length] = arguments[i];
+					}
+					return this.length;
 				};
 			}
 
@@ -2130,7 +2130,7 @@
 			span.pre {
 				white-space: pre;
 			}
-			
+
 			pre.unwrapped {
 				display: inline !important;
 			}

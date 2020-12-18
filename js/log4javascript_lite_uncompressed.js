@@ -1,5 +1,5 @@
 /**
- * Copyright 2014 Tim Down.
+ * Copyright 2015 Tim Down.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,7 +33,7 @@ var log4javascript;
 	var newLine = "\r\n";
 	function Log4JavaScript() {}
 	log4javascript = new Log4JavaScript();
-	log4javascript.version = "1.4.9";
+	log4javascript.version = "1.4.13";
 	log4javascript.edition = "log4javascript_lite";
 
 	function getExceptionMessage(ex) {
@@ -260,7 +260,7 @@ var log4javascript;
 '				font-family: tahoma, verdana, arial, helvetica, sans-serif;',
 '				overflow: hidden;',
 '			}',
-'			',
+'',
 '			div#toolbar {',
 '				border-top: solid #ffffff 1px;',
 '				border-bottom: solid #aca899 1px;',
